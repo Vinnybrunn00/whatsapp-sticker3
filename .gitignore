@@ -1,0 +1,22 @@
+
+package-lock.json
+
+node_modules
+
+BOT.data.json
+
+# managed by open-wa
+**.data.json
+**.node-persist**
+**_IGNORE_**
+# end managed by open-wa
+
+/data/users
+/logs
+
+/lib/logs
+/voice/
+/test
+/video
+/dist
+.env
