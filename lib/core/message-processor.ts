@@ -8,6 +8,11 @@ import VoiceServices from "../services/voice-services";
 import YTDownloadServices from "../services/ytdownload-services";
 import ShellServices from "../services/shell-services";
 import GeminiFunctions from "../services/IA/gemini-functions";
+import AddParticipant from "../services/group-manager/actions-participant/add-participant";
+import DemoteParticipant from "../services/group-manager/actions-participant/demote-participant";
+import RemoveParticipant from "../services/group-manager/actions-participant/remove-participants";
+import PromoteParticipant from "../services/group-manager/actions-participant/promote-participant";
+import SetDescriptionGroup from "../services/group-manager/actions-group/set-description-group";
 
 export default class MessageProcessor {
     private services: MessageServices[];
@@ -22,6 +27,11 @@ export default class MessageProcessor {
             new YTDownloadServices(),
             new ShellServices(),
             new GeminiFunctions(message),
+            new AddParticipant(),
+            new RemoveParticipant(),
+            new PromoteParticipant(),
+            new DemoteParticipant(),
+            new SetDescriptionGroup(),
         ];
     }
 

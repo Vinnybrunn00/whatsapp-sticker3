@@ -8,7 +8,6 @@ create(config).then((bot: Client) => {
 
 function start(bot: Client): void {
     bot.onMessage(async (message: Message) => {
-        //console.log(message);
         let messageProcessor = new MessageProcessor(message);
         await messageProcessor.process(message, bot);
     });
