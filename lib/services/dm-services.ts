@@ -1,4 +1,4 @@
-import { Client, ContactId, GroupChatId, Message } from "@open-wa/wa-automate";
+import { Client, ContactId, Message } from "@open-wa/wa-automate";
 import fs from "fs/promises";
 import fs_simple from "fs";
 import OwnerServices from "../utils/owner-services";
@@ -46,7 +46,9 @@ export default class DmServices implements MessageServices {
         if (!isOwner && !isBlock) {
             await bot.sendText(message.from, this.msg.programmer_msg);
             await bot.createGroup("new group1", senderId);
-            await logs.saveLogInfo(`${message.notifyName} bloqueado da DM...`);
+            await logs.saveLogInfo(
+                `${message.notifyName} bloqueado da DM...`,
+            );
         }
     }
 
