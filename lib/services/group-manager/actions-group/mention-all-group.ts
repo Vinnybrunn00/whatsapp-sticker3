@@ -1,10 +1,10 @@
 import { Client, Message } from "@open-wa/wa-automate";
-import SaveLogsServices from "../utils/save-logs-services";
-import ConstantMessage from "../constants/dev-messages";
-import Utils from "../utils/utils";
-import { MessageServices } from "../interfaces/message-services";
+import SaveLogsServices from "../../../utils/save-logs-services";
+import ConstantMessage from "../../../constants/dev-messages";
+import Utils from "../../../utils/utils";
+import { MessageServices } from "../../../interfaces/message-services";
 
-export default class MentionAllServices implements MessageServices {
+export default class MentionAllGroup implements MessageServices {
     private command: string = "!all";
     private constantMsg: ConstantMessage = new ConstantMessage();
     private utils: Utils = new Utils();
@@ -19,16 +19,24 @@ export default class MentionAllServices implements MessageServices {
         await this.sendMentionAll(message, bot);
     }
 
-    private async sendMentionAll(message: Message, bot: Client): Promise<void> {
+    private async sendMentionAll(
+        message: Message,
+        bot: Client,
+    ): Promise<void> {
         if (!message.isGroupMsg) return;
 
         let logs: SaveLogsServices = new SaveLogsServices(message);
 
-        let mention: string | undefined = await this.mentionsAll(message, bot);
+        let mention: string | undefined = await this.mentionsAll(
+            message,
+            bot,
+        );
 
         if (mention !== undefined) {
             await bot.reply(message.from, mention, message.id);
-            await logs.saveLogInfo(`${message.notifyName} Marcou todos do grupo...`);
+            await logs.saveLogInfo(
+                `${message.notifyName} Marcou todos do grupo...`,
+            );
         }
     }
 
