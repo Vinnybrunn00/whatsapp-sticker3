@@ -40,12 +40,16 @@ export default class YTDownloadServices implements MessageServices {
     }
 
     private async YTDownload(message: Message, bot: Client): Promise<void> {
-        let url: string = message.body.slice(4);
+        let url: string = message.body.slice(this.command.length + 1);
 
         if (!this.isExist) await fs_promises.mkdir(this.path);
 
         const ytdlp: YtDlp = new YtDlp();
-        await bot.reply(message.from, "Baixando o vídeo, aguarde...⌛", message.id);
+        await bot.reply(
+            message.from,
+            "Baixando o vídeo, aguarde...⌛",
+            message.id,
+        );
         await ytdlp.downloadAsync(url, {
             output: this.pathVideo,
         });

@@ -28,14 +28,17 @@ export default class ShellServices implements MessageServices {
         }
     }
 
-    private async execShellScript(message: Message, bot: Client): Promise<void> {
+    private async execShellScript(
+        message: Message,
+        bot: Client,
+    ): Promise<void> {
         let owner: OwnerServices = new OwnerServices(message.sender.id);
 
         if (!owner.isOwner()) {
             await bot.reply(message.from, "Sem permissão", message.id);
         }
 
-        let args: string = message.body.slice(6);
+        let args: string = message.body.slice(this.command.length + 1);
 
         const result = shell.exec(args, { windowsHide: true });
 

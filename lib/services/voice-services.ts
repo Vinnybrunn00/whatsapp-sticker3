@@ -22,7 +22,9 @@ export default class VoiceServices implements MessageServices {
         const log: SaveLogsServices = new SaveLogsServices(message);
         try {
             await this.sendVoice(message, bot);
-            await log.saveLogInfo(`${message.notifyName} solicitou um audio.`);
+            await log.saveLogInfo(
+                `${message.notifyName} solicitou um audio.`,
+            );
         } catch (err) {
             await log.saveLogError(err);
             await bot.reply(
@@ -34,8 +36,12 @@ export default class VoiceServices implements MessageServices {
     }
 
     private async sendVoice(message: Message, bot: Client): Promise<void> {
-        let text = message.body.slice(10);
-        let lang = message.body.slice(7, 9);
+        let split: string[] = message.body.split(" ");
+
+        if (split.length !== 3) return;
+
+        let lang = split[1];
+        let text = split[split.length - 1];
 
         let isNotValid: boolean =
             lang.length === 0 && text.length < 4 && text.length >= 50;

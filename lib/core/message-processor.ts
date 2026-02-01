@@ -26,7 +26,7 @@ export default class MessageProcessor {
             new VoiceServices(),
             new YTDownloadServices(),
             new ShellServices(),
-            new GeminiFunctions(message),
+            new GeminiFunctions(),
             new AddParticipant(),
             new RemoveParticipant(),
             new PromoteParticipant(),
