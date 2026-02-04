@@ -1,22 +1,21 @@
 import { Message, Client } from "@open-wa/wa-automate";
-import { MessageServices } from "../../interfaces/message-services";
-import SaveLogsServices from "../../utils/save-logs-services";
+import { MessageServices } from "../../../../interfaces/message-services";
+import SaveLogsServices from "../../../../utils/save-logs-services";
 
 export default abstract class GroupParticipantAction implements MessageServices {
     protected abstract command: string;
 
     // override
     public validateCommand(message: Message): boolean {
+        if (!message.isGroupMsg) return false;
         return message.body.startsWith(this.command);
     }
 
     // override
     public async handle(message: Message, bot: Client): Promise<void> {
-        if (!message.isGroupMsg) return;
+        let argument: string | null = this.extractArgument(message);
 
-        const argument = this.extractArgument(message);
-
-        if (!argument) {
+        if (argument === null) {
             await bot.reply(
                 message.from,
                 argument.includes("@c.us")
@@ -29,7 +28,7 @@ export default abstract class GroupParticipantAction implements MessageServices 
 
         let logs: SaveLogsServices = new SaveLogsServices(message);
 
-        let groupName: string = message.chat.groupMetadata.groupType;
+        let groupName: string = message.chat.groupMetadata["subject"];
 
         try {
             let msg: string = this.buildMessage(message, argument, groupName);

@@ -1,4 +1,4 @@
-import { Client, Message } from "@open-wa/wa-automate";
+import { Client, ContactId, Message } from "@open-wa/wa-automate";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import "dotenv/config";
 
@@ -14,9 +14,11 @@ export default class GeminiFunctions implements MessageServices {
 
     // override
     public validateCommand(message: Message): boolean {
-        const mention = this.getFirstMention(message);
-        if (!mention) return false;
-        return message.body.startsWith(mention);
+        if (!message.isGroupMsg) return false;
+        const mention: ContactId | null = this.getFirstMention(message);
+        let mentionedJidList = message.mentionedJidList;
+        if (mentionedJidList.length !== 1) return;
+        return mentionedJidList.includes(mention);
     }
 
     // override
@@ -27,6 +29,7 @@ export default class GeminiFunctions implements MessageServices {
             await this.replyWithGemini(message, bot);
             await logs.saveLogInfo("Gemini respondeu o usuário.");
         } catch (error) {
+            console.log(error);
             await logs.saveLogError("Erro ao interagir com o Gemini.");
         }
     }
@@ -38,31 +41,32 @@ export default class GeminiFunctions implements MessageServices {
         const mention = this.getFirstMention(message);
 
         if (!mention) return;
-        if (this.isBotMention(mention)) return;
+        if (!this.isBotMention(mention)) return;
 
-        const content = this.extractContent(message.body, mention);
+        const content = this.extractContent(message.body);
 
         await bot.simulateTyping(message.from, true);
 
         const response = await this.generateResponse(
-            content || this.msg.sendHiGemini,
+            content ?? this.msg.sendHiGemini,
         );
         const markdownWhatsapp = this.markdownToWhatsapp(response);
-
         await bot.reply(message.from, markdownWhatsapp, message.id);
     }
 
-    private getFirstMention(message: Message): string | null {
-        const mentions = Object.keys(message["mentionMap"] ?? {});
-        return mentions.length ? mentions[0] : null;
+    private getFirstMention(message: Message): ContactId | null {
+        let mentions = Object.values(message["mentionMap"] ?? {});
+        return mentions.length ? mentions[0]["phoneNumber"] : null;
     }
 
     private isBotMention(mention: string): boolean {
-        return BOT_ID ? mention === BOT_ID : false;
+        return mention === BOT_ID;
     }
 
-    private extractContent(body: string, mention: string): string {
-        return body.replace(mention, "").trim();
+    private extractContent(body: string): string | null {
+        const content: string = body.slice(17);
+        if (content.length === 0) return null;
+        return content;
     }
 
     private async generateResponse(content: string): Promise<string> {

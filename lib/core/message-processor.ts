@@ -12,13 +12,17 @@ import AddParticipant from "../services/group-manager/actions-participant/add-pa
 import DemoteParticipant from "../services/group-manager/actions-participant/demote-participant";
 import RemoveParticipant from "../services/group-manager/actions-participant/remove-participants";
 import PromoteParticipant from "../services/group-manager/actions-participant/promote-participant";
-import SetDescriptionGroup from "../services/group-manager/actions-group/set-description-group";
+import SetDescriptionGroup from "../services/group-manager/actions-participant/set-description-group";
+import LinkGroupInvite from "../services/group-manager/actions-group/link-group-Invite";
+import Test from "../services/test/test";
+import GetAdminsGroup from "../services/group-manager/actions-group/get-admins-group";
 
 export default class MessageProcessor {
     private services: MessageServices[];
 
-    constructor(message: Message) {
+    constructor() {
         this.services = [
+            new Test(),
             new LogsServices(),
             new DmServices(),
             new StickerWithImageVideoServices(),
@@ -32,6 +36,8 @@ export default class MessageProcessor {
             new PromoteParticipant(),
             new DemoteParticipant(),
             new SetDescriptionGroup(),
+            new LinkGroupInvite(),
+            new GetAdminsGroup(),
         ];
     }
 

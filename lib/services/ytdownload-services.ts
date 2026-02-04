@@ -14,7 +14,8 @@ export default class YTDownloadServices implements MessageServices {
     private isExist: boolean = fs.existsSync(this.path);
 
     // override
-    validateCommand(message: Message): boolean {
+    public validateCommand(message: Message): boolean {
+        if (!message.isGroupMsg) return false;
         return message.body.startsWith(this.command);
     }
 

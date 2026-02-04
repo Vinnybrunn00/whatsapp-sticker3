@@ -16,6 +16,8 @@ Comandos essenciais para manter a ordem no chat.
 | `!promote` | Promove um membro a Administrador. |
 | `!demote` | Remove o cargo de Administrador de um membro. |
 | `!remove` | Remove um participante do grupo. |
+| `!getAdmins` | Marca todos os admins do grupo. |
+| `!getLink` | Envia o link de convite do grupo |
 | `!all` | Marca todos os membros do grupo (menciona @todos). |
 
 ### 🎨 Mídia e Utilidades
@@ -34,6 +36,7 @@ Acesso de baixo nível e monitoramento (Restrito ao Owner).
 | :--- | :--- |
 | `!getlog` | Envia o histórico de logs do bot. |
 | `!exec` | Executa comandos no terminal da máquina host (Shell). |
+| `!stats` | Envia um json com informações de consumo do PC do host |
 
 ---
 
@@ -76,8 +79,14 @@ Para que a IA integrada funcione corretamente, é necessário configurar a chave
 ### Criar o arquivo .env no diretório raiz do projeto.
 
 #### Windows / Linux / Mac:
+
+### Setando a chave API do Gemini ao `.env`
 ```bash
 $ echo export GEN_API_KEY="sua_api_key_aqui" >> .env
+```
+### Adicionando o número do host ao `.env`
+```bash
+$ echo export BOT_ID=numero_do_host_aqui >> .env
 ```
 ### Run - Compilado
 ```bash

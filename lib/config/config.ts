@@ -8,6 +8,6 @@ export const config: AdvancedConfig | ConfigObject = {
     disableSpins: true,
     headless: true,
     logConsole: false,
-    popup: true,
+    popup: false,
     qrTimeout: 0,
 };

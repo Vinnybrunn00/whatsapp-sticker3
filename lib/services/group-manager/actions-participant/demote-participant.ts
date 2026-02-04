@@ -1,5 +1,5 @@
 import { Message, Client, ContactId } from "@open-wa/wa-automate";
-import GroupParticipantAction from "../group-participants-actions-";
+import GroupParticipantAction from "./contract/group-participants-actions-";
 
 export default class DemoteParticipant extends GroupParticipantAction {
     // extends

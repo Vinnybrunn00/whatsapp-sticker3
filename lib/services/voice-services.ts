@@ -14,6 +14,7 @@ export default class VoiceServices implements MessageServices {
 
     // override
     public validateCommand(message: Message): boolean {
+        if (!message.isGroupMsg) return false;
         return message.body.startsWith(this.command);
     }
 
