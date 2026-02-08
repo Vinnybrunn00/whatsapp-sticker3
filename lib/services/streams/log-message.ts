@@ -1,6 +1,6 @@
-import { Message, Client, ContactId } from "@open-wa/wa-automate";
+import { Message } from "@open-wa/wa-automate";
 
-import { MessageServices } from "../interfaces/message-services";
+import { MessageServices } from "../../interfaces/message-services";
 
 import fs from "fs/promises";
 

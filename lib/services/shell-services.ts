@@ -1,4 +1,4 @@
-import shell, { cat } from "shelljs";
+import shell from "shelljs";
 import OwnerServices from "../utils/owner-services";
 import { Client, Message } from "@open-wa/wa-automate";
 import { MessageServices } from "../interfaces/message-services";

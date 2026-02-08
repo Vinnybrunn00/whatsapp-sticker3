@@ -1,5 +1,4 @@
 import { Client, Message } from "@open-wa/wa-automate";
-
 import GroupParticipantAction from "./contract/group-participants-actions-";
 
 export default class SetDescriptionGroup extends GroupParticipantAction {

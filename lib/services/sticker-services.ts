@@ -29,6 +29,7 @@ export default class StickerWithImageVideoServices implements MessageServices {
     // override
     public validateCommand(message: Message): boolean {
         if (!message.isGroupMsg) return false;
+        if (message.type === "chat") return false;
         return (
             message.caption?.startsWith(this.command) ||
             message.body.startsWith(this.command)
@@ -38,11 +39,13 @@ export default class StickerWithImageVideoServices implements MessageServices {
     // override
     public async handle(message: Message, bot: Client): Promise<void> {
         let logs: SaveLogsServices = new SaveLogsServices(message);
+
         try {
             message.type === "image" || message.type === "video"
                 ? await this.sendStickerNormal(message, bot, logs)
                 : await this.sendStickerQuotedMsgMimetype(message, bot, logs);
         } catch (err) {
+            console.log(err);
             await logs.saveLogError(err);
             await bot.reply(message.from, err, message.id);
         }
@@ -64,10 +67,18 @@ export default class StickerWithImageVideoServices implements MessageServices {
             pack: "hubberBot",
         };
 
-        let sticker: string = await this.sendResolveSticker(message, bot, undefined);
+        let sticker: string = await this.sendResolveSticker(
+            message,
+            bot,
+            undefined,
+        );
 
         if (message.type === "image") {
-            await bot.sendImageAsSticker(message.from, sticker, contentToImage);
+            await bot.sendImageAsSticker(
+                message.from,
+                sticker,
+                contentToImage,
+            );
             await logs.saveLogInfo(
                 `${message.notifyName} gerou uma figurinha com imagem...`,
             );
@@ -100,7 +111,11 @@ export default class StickerWithImageVideoServices implements MessageServices {
         );
 
         if (quotedType !== "video") {
-            await bot.sendImageAsSticker(message.from, sticker, this.contentToImage);
+            await bot.sendImageAsSticker(
+                message.from,
+                sticker,
+                this.contentToImage,
+            );
             await logs.saveLogInfo(
                 `${message.notifyName} gerou uma figurinha com imagem...`,
             );
@@ -127,7 +142,8 @@ export default class StickerWithImageVideoServices implements MessageServices {
             this.sendRequestSticker(message),
             message.id,
         );
-        let decryp: Message | any = quotedMsg === undefined ? message : quotedMsg;
+        let decryp: Message | any =
+            quotedMsg === undefined ? message : quotedMsg;
         let mimetype: any =
             quotedMsg === undefined ? message.mimetype : quotedMsg.mimetype;
         const decrypt: Buffer<ArrayBufferLike> = await decryptMedia(decryp);

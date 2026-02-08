@@ -1,7 +1,7 @@
 import { Client, Message } from "@open-wa/wa-automate";
 import { MessageServices } from "../interfaces/message-services";
 import StickerWithImageVideoServices from "../services/sticker-services";
-import DmServices from "../services/dm-services";
+import DmServices from "../services/streams/dm-services";
 import MentionAllGroup from "../services/group-manager/actions-group/mention-all-group";
 import LogsServices from "../services/logs-services";
 import VoiceServices from "../services/voice-services";
@@ -16,7 +16,7 @@ import SetDescriptionGroup from "../services/group-manager/actions-participant/s
 import LinkGroupInvite from "../services/group-manager/actions-group/link-group-Invite";
 import Test from "../services/test/test";
 import GetAdminsGroup from "../services/group-manager/actions-group/get-admins-group";
-import LogMessage from "../services/log-message";
+import LogMessage from "../services/streams/log-message";
 import { GeminiResumeChat } from "../services/IA/gemini-resume-chat";
 
 export default class MessageProcessor {

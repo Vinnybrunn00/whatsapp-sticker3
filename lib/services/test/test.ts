@@ -1,6 +1,6 @@
 import { Message, Client } from "@open-wa/wa-automate";
 import { MessageServices } from "../../interfaces/message-services";
-import fs from "fs/promises";
+
 import GeminiFunctions from "../IA/gemini-functions";
 
 export default class Test extends GeminiFunctions implements MessageServices {

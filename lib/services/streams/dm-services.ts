@@ -1,10 +1,10 @@
 import { Client, ContactId, Message } from "@open-wa/wa-automate";
 import fs from "fs/promises";
 import fs_simple from "fs";
-import OwnerServices from "../utils/owner-services";
-import SaveLogsServices from "../utils/save-logs-services";
-import ConstantMessage from "../constants/dev-messages";
-import { MessageServices } from "../interfaces/message-services";
+import OwnerServices from "../../utils/owner-services";
+import SaveLogsServices from "../../utils/save-logs-services";
+import ConstantMessage from "../../constants/dev-messages";
+import { MessageServices } from "../../interfaces/message-services";
 
 export default class DmServices implements MessageServices {
     private root: string = process.cwd();
