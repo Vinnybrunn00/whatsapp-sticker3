@@ -46,7 +46,7 @@ export default class LogMessage implements MessageServices {
             groupId: chatId,
         });
 
-        if (list.length > 20) list.shift();
+        if (list.length > 40) list.shift();
 
         await fs.writeFile(`${chatPathFull}.json`, JSON.stringify(list));
     }

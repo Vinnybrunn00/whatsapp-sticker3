@@ -44,7 +44,7 @@ export class GeminiResumeChat
 
         const json: object[] = JSON.parse(readFile);
 
-        if (json.length === 20) {
+        if (json.length < 40) {
             await bot.reply(
                 message.from,
                 this.msg.insufficientMessage,
@@ -72,10 +72,9 @@ export class GeminiResumeChat
             "sem dizer nada" +
             "em 3º pessoa" +
             "verbos no passado" +
-            "Linguagem neutra" +
+            "linguagem neutra" +
             "estilo “observador externo”" +
             "inclua no texto o notifyName" +
-            "quebra de linha no fim do topico" +
             `: ${response}`
         );
     }
