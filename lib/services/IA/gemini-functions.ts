@@ -10,7 +10,7 @@ const genIA = new GoogleGenerativeAI(process.env.GEN_API_KEY as string);
 const BOT_ID = process.env.BOT_ID;
 
 export default class GeminiFunctions implements MessageServices {
-    private readonly msg = new ConstantMessage();
+    public readonly msg = new ConstantMessage();
 
     // override
     public validateCommand(message: Message): boolean {
@@ -34,7 +34,7 @@ export default class GeminiFunctions implements MessageServices {
         }
     }
 
-    private async replyWithGemini(
+    protected async replyWithGemini(
         message: Message,
         bot: Client,
     ): Promise<void> {
@@ -54,22 +54,22 @@ export default class GeminiFunctions implements MessageServices {
         await bot.reply(message.from, markdownWhatsapp, message.id);
     }
 
-    private getFirstMention(message: Message): ContactId | null {
+    protected getFirstMention(message: Message): ContactId | null {
         let mentions = Object.values(message["mentionMap"] ?? {});
         return mentions.length ? mentions[0]["phoneNumber"] : null;
     }
 
-    private isBotMention(mention: string): boolean {
+    protected isBotMention(mention: string): boolean {
         return mention === BOT_ID;
     }
 
-    private extractContent(body: string): string | null {
+    protected extractContent(body: string): string | null {
         const content: string = body.slice(17);
         if (content.length === 0) return null;
         return content;
     }
 
-    private async generateResponse(content: string): Promise<string> {
+    protected async generateResponse(content: string): Promise<string> {
         const model = genIA.getGenerativeModel({
             model: "gemini-3-flash-preview",
         });
@@ -77,7 +77,7 @@ export default class GeminiFunctions implements MessageServices {
         return result.response.text();
     }
 
-    private markdownToWhatsapp(text: string): string {
+    protected markdownToWhatsapp(text: string): string {
         if (!text) return text;
 
         let result = text;

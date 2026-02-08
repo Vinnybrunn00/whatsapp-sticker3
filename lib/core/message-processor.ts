@@ -16,6 +16,8 @@ import SetDescriptionGroup from "../services/group-manager/actions-participant/s
 import LinkGroupInvite from "../services/group-manager/actions-group/link-group-Invite";
 import Test from "../services/test/test";
 import GetAdminsGroup from "../services/group-manager/actions-group/get-admins-group";
+import LogMessage from "../services/log-message";
+import { GeminiResumeChat } from "../services/IA/gemini-resume-chat";
 
 export default class MessageProcessor {
     private services: MessageServices[];
@@ -25,6 +27,7 @@ export default class MessageProcessor {
             new Test(),
             new LogsServices(),
             new DmServices(),
+            new LogMessage(),
             new StickerWithImageVideoServices(),
             new MentionAllGroup(),
             new VoiceServices(),
@@ -38,6 +41,7 @@ export default class MessageProcessor {
             new SetDescriptionGroup(),
             new LinkGroupInvite(),
             new GetAdminsGroup(),
+            new GeminiResumeChat(),
         ];
     }
 

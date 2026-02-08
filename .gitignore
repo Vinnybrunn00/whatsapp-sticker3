@@ -15,6 +15,7 @@ BOT.data.json
 /lib/data/stats
 /lib/data/users
 /logs
+/lib/data/chats
 
 /lib/logs
 /voice/

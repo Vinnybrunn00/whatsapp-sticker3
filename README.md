@@ -26,6 +26,7 @@ Ferramentas de conversão e download de conteúdo.
 | Comando | Descrição |
 | :--- | :--- |
 | `!sticker` | Transforma imagens e vídeos em figurinhas. |
+| `!resume` | Resume em tópicos uma conversa em um grupo. |
 | `!voice` | Converte texto em áudio (voz sintetizada). |
 | `!yt` | Baixa vídeos do YouTube via link direto. |
 
@@ -37,7 +38,6 @@ Acesso de baixo nível e monitoramento (Restrito ao Owner).
 | `!getlog` | Envia o histórico de logs do bot. |
 | `!exec` | Executa comandos no terminal da máquina host (Shell). |
 | `!stats` | Envia um json com informações de consumo do PC do host |
-
 ---
 
 ## Instalação

@@ -6,8 +6,8 @@ export default class ConstantMessage {
     public reqRegister: string;
     public onlyAdmUsedCommand: string;
     public sendHiGemini: string;
-
     public needAdmbot: string;
+    public insufficientMessage: string;
 
     constructor() {
         this.sendOk = `\`\`\`[200] - OK 🤖 ✔️ \`\`\``;
@@ -21,5 +21,6 @@ export default class ConstantMessage {
         this.sendHiGemini =
             "oi (responda de uma maneira mais zoeira e curta)";
         this.needAdmbot = "O bot precisa ser adm";
+        this.insufficientMessage = "Mensagens insuficientes";
     }
 }
