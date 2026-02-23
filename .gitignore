@@ -23,3 +23,9 @@ BOT.data.json
 /video
 /dist
 .env
+
+flutter_windows.dll
+startup.exe
+unins000.dat
+unins000.exe
+/data
