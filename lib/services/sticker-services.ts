@@ -29,7 +29,6 @@ export default class StickerWithImageVideoServices implements MessageServices {
     // override
     public validateCommand(message: Message): boolean {
         if (!message.isGroupMsg) return false;
-        if (message.type === "chat") return false;
         return (
             message.caption?.startsWith(this.command) ||
             message.body.startsWith(this.command)
@@ -45,7 +44,6 @@ export default class StickerWithImageVideoServices implements MessageServices {
                 ? await this.sendStickerNormal(message, bot, logs)
                 : await this.sendStickerQuotedMsgMimetype(message, bot, logs);
         } catch (err) {
-            console.log(err);
             await logs.saveLogError(err);
             await bot.reply(message.from, err, message.id);
         }
@@ -101,7 +99,14 @@ export default class StickerWithImageVideoServices implements MessageServices {
         bot: Client,
         logs: SaveLogsServices,
     ): Promise<void> {
+        let quotedMsg: Message = message.quotedMsg;
+
+        if (quotedMsg == null) {
+            throw "Este comando precisa de uma image ou video!";
+        }
+
         let quotedType = message.quotedMsg.type;
+
         if (quotedType !== "image" && quotedType !== "video") return;
 
         let sticker: string = await this.sendResolveSticker(
