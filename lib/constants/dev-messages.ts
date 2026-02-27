@@ -8,6 +8,7 @@ export default class ConstantMessage {
     public sendHiGemini: string;
     public needAdmbot: string;
     public insufficientMessage: string;
+    public rulesGeminiStrongText: string
 
     constructor() {
         this.sendOk = `\`\`\`[200] - OK 🤖 ✔️ \`\`\``;
@@ -22,5 +23,8 @@ export default class ConstantMessage {
             "oi (responda de uma maneira mais zoeira e curta)";
         this.needAdmbot = "O bot precisa ser adm";
         this.insufficientMessage = "Mensagens insuficientes";
+        this.rulesGeminiStrongText =
+            "responda de uma maneira curta, não escreva textão";
+
     }
 }

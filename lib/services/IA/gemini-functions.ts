@@ -29,7 +29,6 @@ export default class GeminiFunctions implements MessageServices {
             await this.replyWithGemini(message, bot);
             await logs.saveLogInfo("Gemini respondeu o usuário.");
         } catch (error) {
-            console.log(error);
             await logs.saveLogError("Erro ao interagir com o Gemini.");
         }
     }
@@ -66,7 +65,7 @@ export default class GeminiFunctions implements MessageServices {
     protected extractContent(body: string): string | null {
         const content: string = body.slice(17);
         if (content.length === 0) return null;
-        return content;
+        return `${content} (${this.msg.rulesGeminiStrongText})`;
     }
 
     protected async generateResponse(content: string): Promise<string> {
