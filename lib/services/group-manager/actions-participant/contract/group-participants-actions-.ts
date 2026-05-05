@@ -16,13 +16,10 @@ export default abstract class GroupParticipantAction implements MessageServices 
         let argument: string | null = this.extractArgument(message);
 
         if (argument === null) {
-            await bot.reply(
-                message.from,
-                argument.includes("@c.us")
-                    ? "Contato inválido"
-                    : "Argumento inválido",
-                message.id,
-            );
+            const invalidMessage: string = argument.includes("@c.us")
+                ? "Contato Inválido"
+                : "Argumento Inválido";
+            await bot.reply(message.from, invalidMessage, message.id);
             return;
         }
 

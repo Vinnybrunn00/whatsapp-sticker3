@@ -32,9 +32,9 @@ export default class GetAdminsGroup implements MessageServices {
     ): Promise<void> {
         const owner = new OwnerServices(message.sender.id);
 
-        if (!owner.isOwner()) return;
+        if (!(await owner.isOwner())) return;
 
-        const admins = await bot.getGroupAdmins(
+        const admins: ContactId[] = await bot.getGroupAdmins(
             message.chat.groupMetadata.id,
         );
 
