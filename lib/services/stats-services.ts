@@ -19,7 +19,7 @@ export default class StatsHostServices implements MessageServices {
     }
 
     private async getStatsHost(message: Message, bot: Client): Promise<void> {
-        const stats: string = (await bot.getProcessStats()) as string;
+        const stats = await bot.getProcessStats();
         if (!stats) return;
 
         let stringify: string = JSON.stringify(stats);
@@ -31,7 +31,7 @@ export default class StatsHostServices implements MessageServices {
             message.from,
             this.statsFilePath,
             this.file,
-            "stats",
+            { type: "document", caption: "stats" },
         );
     }
 }

@@ -3,6 +3,10 @@ import SaveLogsServices from "../../../utils/save-logs-services";
 import ConstantMessage from "../../../constants/dev-messages";
 import Utils from "../../../utils/utils";
 import { MessageServices } from "../../../interfaces/message-services";
+import {
+    sendReplyWithMentions,
+    simulateTyping,
+} from "../../../utils/wa-compat";
 
 export default class MentionAllGroup implements MessageServices {
     private command: string = "!all";
@@ -44,6 +48,7 @@ export default class MentionAllGroup implements MessageServices {
         bot: Client,
     ): Promise<string | undefined> {
         let users: string[] = [];
+        let ids: string[] = [];
 
         const groupMetadata = message.chat.groupMetadata;
 
@@ -62,15 +67,18 @@ export default class MentionAllGroup implements MessageServices {
                 for (let j = 0; j < contacts.length; j++) {
                     if (contacts[j]["isMe"]) continue;
                     let members: ContactId = contacts[j]["id"];
-                    let newMembers = members.replace("@c.us", "");
+                    let newMembers = members.split("@")[0];
+                    ids.push(members);
                     users.push(`› *@${newMembers}*\n`);
                 }
 
-                await bot.simulateTyping(message.from, true);
-                await bot.sendReplyWithMentions(
+                await simulateTyping(bot, message.from, true);
+                await sendReplyWithMentions(
+                    bot,
                     message.from,
                     this.bannerMetionAll(message, users.toString()),
                     message.id,
+                    ids,
                 );
             }
         }

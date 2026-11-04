@@ -58,8 +58,8 @@ export default class YTDownloadServices implements MessageServices {
         await bot.sendFile(
             message.from,
             this.pathVideo,
-            "Completed ✅",
             "video.mp4",
+            { type: "video", caption: "Completed ✅" },
         );
     }
 }

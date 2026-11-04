@@ -1,6 +1,7 @@
 import { Client, ContactId, Message } from "@open-wa/wa-automate";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import "dotenv/config";
+import { simulateTyping } from "../../utils/wa-compat";
 
 import ConstantMessage from "../../constants/dev-messages";
 import SaveLogsServices from "../../utils/save-logs-services";
@@ -44,7 +45,7 @@ export default class GeminiFunctions implements MessageServices {
 
         const content = this.extractContent(message.body);
 
-        await bot.simulateTyping(message.from, true);
+        await simulateTyping(bot, message.from, true);
 
         const response = await this.generateResponse(
             content ?? this.msg.sendHiGemini,

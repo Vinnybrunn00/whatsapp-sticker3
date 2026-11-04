@@ -3,6 +3,10 @@ import { MessageServices } from "../../interfaces/message-services";
 import fs from "fs/promises";
 import GeminiFunctions from "./gemini-functions";
 import SaveLogsServices from "../../utils/save-logs-services";
+import {
+    sendReplyWithMentions,
+    simulateTyping,
+} from "../../utils/wa-compat";
 
 export class GeminiResumeChat
     extends GeminiFunctions
@@ -55,7 +59,7 @@ export class GeminiResumeChat
 
         const jsonify = JSON.stringify(json);
 
-        await bot.simulateTyping(message.from, true);
+        await simulateTyping(bot, message.from, true);
 
         const response = await this.generateResponse(
             this.promptForGemini(jsonify),
@@ -63,7 +67,7 @@ export class GeminiResumeChat
 
         let markdown: string = this.markdownToWhatsapp(response);
 
-        await bot.sendReplyWithMentions(message.from, markdown, message.id);
+        await sendReplyWithMentions(bot, message.from, markdown, message.id);
     }
 
     private promptForGemini(response: string): string {

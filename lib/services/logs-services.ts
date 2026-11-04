@@ -28,7 +28,10 @@ export default class LogsServices implements MessageServices {
             message.from,
             logFile,
             "logfile",
-            "• Arquivo de logs de eventos do bot!",
+            {
+                type: "document",
+                caption: "• Arquivo de logs de eventos do bot!",
+            },
         );
 
         await log.saveLogInfo(`${message.notifyName} Solicitou o arquivo de log...`);

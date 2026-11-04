@@ -1,29 +1,15 @@
-import { Client, decryptMedia, Message } from "@open-wa/wa-automate";
+import { Client, Message, StickerJob } from "@open-wa/wa-automate";
 
 import SaveLogsServices from "../utils/save-logs-services";
 import Utils from "../utils/utils";
 import { MessageServices } from "../interfaces/message-services";
+import { sendReplyWithMentions } from "../utils/wa-compat";
 
-type ContentToImage = {
-    author: string;
-    keepScale: boolean;
-    pack: string;
-};
-
-type ContentToVideo = {
-    author: string;
-    pack: string;
-};
-
-type EndTime = {
-    endTime: string;
-};
+// vídeos viram figurinha só com os 7 primeiros segundos
+const VIDEO_TRIM_MS: [number, number] = [0, 7000];
 
 export default class StickerWithImageVideoServices implements MessageServices {
     private command: string = "!sticker";
-    private contentToImage: ContentToImage;
-    private contentToVideo: ContentToVideo;
-    private endTime: EndTime = { endTime: "00:00:07.0" };
     private utils: Utils = new Utils();
 
     // override
@@ -54,43 +40,19 @@ export default class StickerWithImageVideoServices implements MessageServices {
         bot: Client,
         logs: SaveLogsServices,
     ): Promise<void> {
-        let contentToImage: ContentToImage = {
-            author: `Feito por: ${message.notifyName}`,
-            keepScale: true,
-            pack: "hubberBot",
-        };
-
-        let contentToVideo: ContentToVideo = {
-            author: `Feito por: ${message.notifyName}`,
-            pack: "hubberBot",
-        };
-
         let sticker: string = await this.sendResolveSticker(
             message,
             bot,
             undefined,
         );
 
-        if (message.type === "image") {
-            await bot.sendImageAsSticker(
-                message.from,
-                sticker,
-                contentToImage,
-            );
-            await logs.saveLogInfo(
-                `${message.notifyName} gerou uma figurinha com imagem...`,
-            );
-            return;
-        }
-
-        await bot.sendMp4AsSticker(
+        await bot.sendSticker(
             message.from,
             sticker,
-            this.endTime,
-            contentToVideo,
+            this.stickerJob(message, message.type === "video"),
         );
         await logs.saveLogInfo(
-            `${message.notifyName} gerou uma figurinha com video...`,
+            `${message.notifyName} gerou uma figurinha com ${message.type === "video" ? "video" : "imagem"}...`,
         );
     }
 
@@ -115,26 +77,23 @@ export default class StickerWithImageVideoServices implements MessageServices {
             message.quotedMsg,
         );
 
-        if (quotedType !== "video") {
-            await bot.sendImageAsSticker(
-                message.from,
-                sticker,
-                this.contentToImage,
-            );
-            await logs.saveLogInfo(
-                `${message.notifyName} gerou uma figurinha com imagem...`,
-            );
-            return;
-        }
-        await bot.sendMp4AsSticker(
+        await bot.sendSticker(
             message.from,
             sticker,
-            this.endTime,
-            this.contentToVideo,
+            this.stickerJob(message, quotedType === "video"),
         );
         await logs.saveLogInfo(
-            `${message.notifyName} gerou uma figurinha com video...`,
+            `${message.notifyName} gerou uma figurinha com ${quotedType === "video" ? "video" : "imagem"}...`,
         );
+    }
+
+    private stickerJob(message: Message, isVideo: boolean): StickerJob {
+        return {
+            author: `Feito por: ${message.notifyName}`,
+            pack: "hubberBot",
+            fit: "contain",
+            ...(isVideo ? { trim: VIDEO_TRIM_MS } : {}),
+        };
     }
 
     private async sendResolveSticker(
@@ -142,17 +101,15 @@ export default class StickerWithImageVideoServices implements MessageServices {
         bot: Client,
         quotedMsg: any,
     ): Promise<string> {
-        await bot.sendReplyWithMentions(
+        await sendReplyWithMentions(
+            bot,
             message.from,
             this.sendRequestSticker(message),
             message.id,
         );
-        let decryp: Message | any =
-            quotedMsg === undefined ? message : quotedMsg;
-        let mimetype: any =
-            quotedMsg === undefined ? message.mimetype : quotedMsg.mimetype;
-        const decrypt: Buffer<ArrayBufferLike> = await decryptMedia(decryp);
-        return `data:${mimetype};base64,${decrypt.toString("base64")}`;
+        let decryp: Message = quotedMsg === undefined ? message : quotedMsg;
+        // na v5 o decryptMedia já devolve um data URL
+        return bot.decryptMedia(decryp);
     }
 
     private sendRequestSticker(message: Message): string {

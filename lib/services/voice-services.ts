@@ -5,6 +5,7 @@ import fs_promisse from "fs/promises";
 import path from "path";
 import { MessageServices } from "../interfaces/message-services";
 import SaveLogsServices from "../utils/save-logs-services";
+import { simulateRecording } from "../utils/wa-compat";
 
 export default class VoiceServices implements MessageServices {
     private command: string = "!voice";
@@ -54,9 +55,11 @@ export default class VoiceServices implements MessageServices {
         if (!exists) await fs_promisse.mkdir(this.path);
         let gtts = new gTTS(text, "pt");
 
-        await bot.simulateRecording(message.from, true);
+        await simulateRecording(bot, message.from);
         gtts.save(this.pathVoice, async () => {
-            await bot.sendPtt(message.from, this.pathVoice, message.id);
+            await bot.sendPtt(message.from, this.pathVoice, {
+                quotedMsgId: message.id,
+            });
         });
     }
 }

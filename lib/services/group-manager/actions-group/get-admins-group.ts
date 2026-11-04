@@ -3,6 +3,11 @@ import { MessageServices } from "../../../interfaces/message-services";
 import OwnerServices from "../../../utils/owner-services";
 import Utils from "../../../utils/utils";
 import SaveLogsServices from "../../../utils/save-logs-services";
+import {
+    getGroupAdmins,
+    sendReplyWithMentions,
+    simulateTyping,
+} from "../../../utils/wa-compat";
 
 export default class GetAdminsGroup implements MessageServices {
     private command: string = "!getAdmins";
@@ -34,7 +39,8 @@ export default class GetAdminsGroup implements MessageServices {
 
         if (!(await owner.isOwner())) return;
 
-        const admins: ContactId[] = await bot.getGroupAdmins(
+        const admins: ContactId[] = await getGroupAdmins(
+            bot,
             message.chat.groupMetadata.id,
         );
 
@@ -42,15 +48,17 @@ export default class GetAdminsGroup implements MessageServices {
 
         for (let i = 0; i < admins.length; i++) {
             const adm: ContactId = admins[i];
-            let newAdmin = adm.replace("@c.us", "");
+            let newAdmin = adm.split("@")[0];
             contacts.push(`@${newAdmin}\n`);
         }
 
-        await bot.simulateTyping(message.from, true);
-        await bot.sendReplyWithMentions(
+        await simulateTyping(bot, message.from, true);
+        await sendReplyWithMentions(
+            bot,
             message.from,
             this.bannerAdmins(message, contacts.toString(), admins.length),
             message.id,
+            admins,
         );
     }
 
