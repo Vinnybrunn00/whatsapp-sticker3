@@ -4,6 +4,7 @@
     "@open-wa/wa-automate": "^5.10.0",
     "@temporalio/client": "^1.14.1",
     "dotenv": "^17.2.3",
+    "ffmpeg-static": "^5.3.0",
     "gtts": "^0.2.1",
     "shelljs": "^0.10.0",
     "ytdlp-nodejs": "^3.3.9"

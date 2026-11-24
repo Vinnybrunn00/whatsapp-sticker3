@@ -1,12 +1,13 @@
-import { Client, Message, StickerJob } from "@open-wa/wa-automate";
+import { Client, Message } from "@open-wa/wa-automate";
 
 import SaveLogsServices from "../utils/save-logs-services";
 import Utils from "../utils/utils";
 import { MessageServices } from "../interfaces/message-services";
 import { sendReplyWithMentions } from "../utils/wa-compat";
+import { sendMediaAsSticker, StickerOptions } from "../utils/sticker-maker";
 
 // vídeos viram figurinha só com os 7 primeiros segundos
-const VIDEO_TRIM_MS: [number, number] = [0, 7000];
+const VIDEO_MAX_SECONDS = 7;
 
 export default class StickerWithImageVideoServices implements MessageServices {
     private command: string = "!sticker";
@@ -31,7 +32,11 @@ export default class StickerWithImageVideoServices implements MessageServices {
                 : await this.sendStickerQuotedMsgMimetype(message, bot, logs);
         } catch (err) {
             await logs.saveLogError(err);
-            await bot.reply(message.from, err, message.id);
+            const text =
+                typeof err === "string"
+                    ? err
+                    : "Não consegui gerar a figurinha, tente de novo.";
+            await bot.reply(message.from, text, message.id);
         }
     }
 
@@ -46,10 +51,11 @@ export default class StickerWithImageVideoServices implements MessageServices {
             undefined,
         );
 
-        await bot.sendSticker(
+        await sendMediaAsSticker(
+            bot,
             message.from,
             sticker,
-            this.stickerJob(message, message.type === "video"),
+            this.stickerOptions(message, message.type === "video"),
         );
         await logs.saveLogInfo(
             `${message.notifyName} gerou uma figurinha com ${message.type === "video" ? "video" : "imagem"}...`,
@@ -69,7 +75,9 @@ export default class StickerWithImageVideoServices implements MessageServices {
 
         let quotedType = message.quotedMsg.type;
 
-        if (quotedType !== "image" && quotedType !== "video") return;
+        if (quotedType !== "image" && quotedType !== "video") {
+            throw "Este comando precisa de uma image ou video!";
+        }
 
         let sticker: string = await this.sendResolveSticker(
             message,
@@ -77,22 +85,23 @@ export default class StickerWithImageVideoServices implements MessageServices {
             message.quotedMsg,
         );
 
-        await bot.sendSticker(
+        await sendMediaAsSticker(
+            bot,
             message.from,
             sticker,
-            this.stickerJob(message, quotedType === "video"),
+            this.stickerOptions(message, quotedType === "video"),
         );
         await logs.saveLogInfo(
             `${message.notifyName} gerou uma figurinha com ${quotedType === "video" ? "video" : "imagem"}...`,
         );
     }
 
-    private stickerJob(message: Message, isVideo: boolean): StickerJob {
+    private stickerOptions(message: Message, isVideo: boolean): StickerOptions {
         return {
             author: `Feito por: ${message.notifyName}`,
             pack: "hubberBot",
-            fit: "contain",
-            ...(isVideo ? { trim: VIDEO_TRIM_MS } : {}),
+            isVideo,
+            maxSeconds: VIDEO_MAX_SECONDS,
         };
     }
 
