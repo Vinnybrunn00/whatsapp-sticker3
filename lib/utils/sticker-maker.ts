@@ -1,5 +1,5 @@
 import { execFile } from "child_process";
-import { promises as fs } from "fs";
+import { existsSync, promises as fs } from "fs";
 import os from "os";
 import path from "path";
 import { promisify } from "util";
@@ -14,8 +14,24 @@ import { Client } from "@open-wa/wa-automate";
 
 declare const WAPI: any;
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ffmpegPath: string = require("ffmpeg-static");
+/*
+ * ffmpeg usado na conversão:
+ *  1. FFMPEG_PATH, se definido;
+ *  2. o binário do ffmpeg-static (Linux/Windows/macOS);
+ *  3. o "ffmpeg" do PATH. No Termux o Node reporta "android", o
+ *     ffmpeg-static não tem binário e é preciso `pkg install ffmpeg`.
+ */
+function resolveFfmpeg(): string {
+    if (process.env.FFMPEG_PATH) return process.env.FFMPEG_PATH;
+    try {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const bundled: string | null = require("ffmpeg-static");
+        if (bundled && existsSync(bundled)) return bundled;
+    } catch {}
+    return "ffmpeg";
+}
+
+const ffmpegPath: string = resolveFfmpeg();
 const run = promisify(execFile);
 
 const SIZE = 512;
