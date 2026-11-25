@@ -1,10 +1,18 @@
+import { existsSync } from "fs";
 import { CreateOptions } from "@open-wa/wa-automate";
 
 // No Termux o Node reporta "android" e a v5 não consegue baixar o
 // navegador sozinha: é preciso usar o Chromium instalado pelo pkg.
 const isTermux: boolean = process.platform === "android";
 
-const termuxChromium: string = `${process.env.PREFIX ?? "/data/data/com.termux/files/usr"}/bin/chromium-browser`;
+// o nome do binário muda conforme o pacote (tur-repo, x11-repo...)
+function findTermuxChromium(): string {
+    const bin = `${process.env.PREFIX ?? "/data/data/com.termux/files/usr"}/bin`;
+    const candidates = ["chromium-browser", "chromium"].map((n) => `${bin}/${n}`);
+    return candidates.find((p) => existsSync(p)) ?? candidates[0];
+}
+
+const termuxChromium: string = isTermux ? findTermuxChromium() : "";
 
 export const config: CreateOptions = {
     sessionId: "wa-bot",
