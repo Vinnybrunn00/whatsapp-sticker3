@@ -28,7 +28,7 @@ export const config: CreateOptions = {
         ? {
               useChromium: true,
               executablePath:
-                  process.env.PUPPETEER_EXECUTABLE_PATH ?? termuxChromium,
+                  process.env.PUPPETEER_EXECUTABLE_PATH || termuxChromium,
           }
         : { useChrome: true }),
 };
